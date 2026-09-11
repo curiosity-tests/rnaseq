@@ -66,7 +66,7 @@ jobs:
         run: uv tool install nf-core==${{ steps.read_yml.outputs['nf_core_version'] }}
 
       - name: Run nf-core pipelines lint
-        continue-on-error: true   # racecar: scan/report step, must not fail the build
+        continue-on-error: true   # racecar: scan/report/push step, must not fail the build
         if: ${{ github.base_ref != 'master' || github.base_ref != 'main' }}
         env:
           GITHUB_COMMENTS_URL: ${{ github.event.pull_request.comments_url }}
@@ -75,7 +75,7 @@ jobs:
         run: nf-core -l lint_log.txt pipelines lint --dir ${GITHUB_WORKSPACE} --markdown lint_results.md
 
       - name: Run nf-core pipelines lint --release
-        continue-on-error: true   # racecar: scan/report step, must not fail the build
+        continue-on-error: true   # racecar: scan/report/push step, must not fail the build
         if: ${{ github.base_ref == 'master' || github.base_ref == 'main' }}
         env:
           GITHUB_COMMENTS_URL: ${{ github.event.pull_request.comments_url }}
@@ -99,7 +99,6 @@ jobs:
 
       # Build a comment for the shared pr-comment.yml poster to publish on the PR
       - name: Prepare PR comment
-        continue-on-error: true   # racecar: scan/report step, must not fail the build
         if: ${{ always() }}
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
